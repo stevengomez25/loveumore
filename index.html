@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♥</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="icon" type="image/png" href="rose.ico">
+    <style>
+        :root {
+            --grass-width: 64px;
+            --grass-height: 64px;
+            --scroll-speed: 5s;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fffacd;
+            background-image: url('./background.gif');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            color: #d81b60;
+        }
+
+        .pixel-grass {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--grass-height);
+            background-image: url('./sprite.png');
+            background-repeat: repeat-x;
+            background-position: bottom left;
+            background-size: var(--grass-width) var(--grass-height);
+            image-rendering: pixelated;
+            z-index: 0;
+            animation: scrollGrass var(--scroll-speed) linear infinite;
+        }
+
+        @keyframes scrollGrass {
+            from {
+                background-position-x: 0px;
+            }
+
+            to {
+                background-position-x: calc(var(--grass-width) * -1);
+            }
+        }
+
+        .game-container {
+            position: relative;
+            width: 720px;
+            height: 900px;
+            z-index: 10;
+        }
+
+        .walking-gif {
+            position: absolute;
+            bottom: 10px;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            image-rendering: pixelated;
+            z-index: 5;
+            animation: walkAcross 15s linear infinite;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            background-image: url('./flowers.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            image-rendering: pixelated;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 140px 220px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(50px);
+            pointer-events: none;
+        }
+
+        .card.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .card p {
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 15px;
+        }
+
+        .btn {
+            color: white;
+            border: 2px solid #ffb6c1;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 80%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-yes {
+            background-color: #ff4081;
+        }
+
+        .btn-no {
+            background-color: #ff80ab;
+        }
+
+        .btn:active {
+            transform: scale(0.95) !important;
+        }
+
+        .falling-rose {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 45px;
+            height: 45px;
+            pointer-events: none;
+            image-rendering: pixelated;
+            z-index: 2;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+
+        .option-pill {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 2px solid #ffb6c1;
+            padding: 8px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #d81b60;
+            box-sizing: border-box;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .option-pill input {
+            accent-color: #ff4081;
+            transform: scale(1.1);
+            flex-shrink: 0;
+        }
+
+        .restaurant-scroll-box {
+            width: 100%;
+            max-height: 340px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 5px;
+            box-sizing: border-box;
+        }
+
+        .restaurant-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ffb6c1;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .restaurant-card input[type="checkbox"] {
+            accent-color: #ff4081;
+            transform: scale(1.3);
+            margin-top: 3px;
+        }
+
+        .restaurant-card.selected {
+            border-color: #ff4081;
+            background-color: #ffe4e1;
+            transform: scale(1.02);
+        }
+
+        .restaurant-info h4 {
+            margin: 0 0 3px 0;
+            color: #d81b60;
+            font-size: 14px;
+        }
+
+        .restaurant-info p {
+            margin: 0;
+            font-size: 11px;
+            color: #555;
+            line-height: 1.3;
+        }
+
+        @keyframes walkAcross {
+            0% {
+                left: 100vw;
+            }
+
+            100% {
+                left: -100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="pixel-grass"></div>
+    <img src="./personaje.gif" alt="Personaje pixel art" class="walking-gif">
+
+    <div class="game-container" id="game-container">
+
+        <div class="card active" id="card-1">
+            <h2>Para ti 💖</h2>
+            <p>Hola preciosa, estas cordialmente invitada a tener una cita con el amor de tu vida. ¿Aceptas?</p>
+
+            <div class="btn-container">
+                <button class="btn btn-yes" id="btn-yes" onclick="nextCard(1, 2)">¡Sí, acepto!</button>
+                <button class="btn btn-no" id="btn-no" onclick="rechazarCita()">No acepto</button>
+            </div>
+        </div>
+
+        <div class="card" id="card-2">
+            <h2>Elige los detalles 🍴</h2>
+            <p>¿Qué tipo de comida te gustaría para nuestra cita?</p>
+
+            <div class="options-container">
+                <label class="option-pill"><input type="checkbox" name="categoria" value="fast-food"> Fast Food &
+                    Burguers 🍔</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="italiana"> Italiana & Pizzas
+                    🍕</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="asiatica"> Asiática (Sushi /
+                    Ramen) 🍣</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="coreana"> Coreana (BBQ /
+                    Pollo) 🍗</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="mexicana"> Mexicana & Tacos
+                    🌮</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="peruana"> Peruana & Mariscos
+                    🦐</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="hamburguesas"> Parrilla &
+                    Carnes 🥩</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="saludable"> Saludable & Bowls
+                    🥗</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="casa"> Casera & Tradicional
+                    🍲</label>
+            </div>
+
+            <button class="btn btn-yes" onclick="guardarPreferenciasYContinuar()">Siguiente ✨</button>
+        </div>
+
+        <div class="card" id="card-3">
+            <h2>Restaurantes para ti 🥰</h2>
+            <p style="font-size: 11px; margin-bottom: 5px;">Elige los que te gusten:</p>
+
+            <div id="restaurant-list" class="restaurant-scroll-box">
+            </div>
+
+            <button class="btn btn-yes" style="margin-top: 15px;" onclick="nextCard(3, 4)">Continuar ✨</button>
+        </div>
+
+        <div class="card" id="card-4">
+            <h2>¡Felices 20 meses! ❤️</h2>
+            <p>Te amo mucho. Gracias por estos 20 meses juntos y por tantas lindas memorias a tu lado. ¡Mi niña preciosa!</p>
+
+            <button class="btn btn-yes" style="margin-top: 15px;" onclick="enviarSeleccionWhatsApp()">¡Confirmar Cita por WhatsApp! 💌</button>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================================
+        // BASE DE DATOS DE RESTAURANTES POR CATEGORÍA
+        // =========================================
+        const restaurantesData = [
+            { categoria: 'fast-food', nombre: 'El Garaje', descripcion: 'Clásico indiscutible con temática motera. Hamburguesas gigantes cerca al Parque San Pío.' },
+            { categoria: 'fast-food', nombre: 'El Menor', descripcion: 'Hamburguesas de autor con mezclas increíbles y un sabor urbano que la rompe en la ciudad.' },
+            { categoria: 'italiana', nombre: 'San Marzano', descripcion: 'Pizza artesanal y pastas con un auténtico toque italiano, famosos por la frescura de sus ingredientes.' },
+            { categoria: 'italiana', nombre: 'Pizza Drive', descripcion: 'Toda una institución pizzera en Bucaramanga. Sabor tradicional que nunca falla en el sector.' },
+            { categoria: 'italiana', nombre: 'Battuto', descripcion: 'Auténtica pasta artesanal y un ambiente elegante ideal para cenas especiales en Cabecera.' },
+            { categoria: 'italiana', nombre: 'Ziru\'s Pizza', descripcion: 'La pizza tradicional santandereana, con locales muy cerca de San Pío y la 33.' },
+            { categoria: 'asiatica', nombre: 'Yakuza', descripcion: 'Ramen y sushi exquisitos en porciones generosas, con un ambiente inmersivo de temática japonesa y un servicio excelente.' },
+            { categoria: 'coreana', nombre: 'Bobby\'s & Friends', descripcion: 'Famosos por sus auténticos corn dogs coreanos (banderillas), con un ambiente increíble en Cabecera.' },
+            { categoria: 'coreana', nombre: 'Mawang Chicken', descripcion: 'El verdadero sabor del pollo frito coreano, súper crujiente y delicioso. Muy cerca del Parque San Pío.' },
+            { categoria: 'coreana', nombre: 'Chicken Box', descripcion: 'Pollo frito al mejor estilo asiático, salsas agridulces y picantes que te encantan.' },
+            { categoria: 'mexicana', nombre: 'De Mil Amores', descripcion: 'Auténtica gastronomía y coctelería mexicana en un ambiente espectacular y animado en Cabecera.' },
+            { categoria: 'mexicana', nombre: 'Tres Tacos Taquería', descripcion: 'Toda la onda de la taquería callejera mexicana: trompo al pastor, sabores intensos y excelentes salsas.' },
+            { categoria: 'mexicana', nombre: 'Tacos Texmex', descripcion: 'Tacos, burritos y nachos con porciones súper generosas y ese clásico sabor tex-mex que a todos gusta.' },
+            { categoria: 'peruana', nombre: 'Llama Perú', descripcion: 'Excelente representación de la comida peruana en la ciudad: lomo saltado, ceviche fresco y causa limeña.' },
+            { categoria: 'peruana', nombre: 'Puerto Marino', descripcion: 'Especialistas en comida de mar. Los mejores ceviches, arroces marineros y mariscos con todo el sabor tradicional.' },
+            { categoria: 'hamburguesas', nombre: 'Hamburguesas San Miguel', descripcion: 'De las mejores hamburguesas de la ciudad, carne jugosa y pan artesanal. Un clásico que no decepciona.' },
+            { categoria: 'hamburguesas', nombre: 'Mercagán', descripcion: 'El orgullo de la carne santandereana. Famosos por su calidad desde la Cra 27 y Cabecera.' },
+            { categoria: 'saludable', nombre: 'Salut Pulpable', descripcion: 'Opciones saludables muy cerca del Parque San Pío, ideal para batidos, wraps y ensaladas frescas.' },
+            { categoria: 'saludable', nombre: 'Zana', descripcion: 'Comida consciente y saludable. Bowls, opciones vegetarianas y platos ligeros llenos de sabor en Cabecera.' },
+            { categoria: 'saludable', nombre: 'Crepes & Waffles', descripcion: 'Clásicos crepes dulces y salados, además de una inmensa barra de ensaladas. Un infaltable de la zona.' },
+            { categoria: 'casa', nombre: 'Restaurante Maroma', descripcion: 'Ubicado en la Concha Acústica del Parque Mejoras Públicas. Excelente ambiente bohemio, platos variados y cócteles.' },
+            { categoria: 'casa', nombre: 'Restaurante Tony', descripcion: 'El ícono de la Cra 27 con 36. Desayunos, almuerzos y comida tradicional santandereana de siempre.' },
+            { categoria: 'casa', nombre: 'El Viejo Chiflas', descripcion: 'Mute, carne oreada y pepitoria. La sazón tradicional que te hace sentir en casa.' }
+        ];
+
+        let categoriasSeleccionadas = [];
+
+        function guardarPreferenciasYContinuar() {
+            const checkboxes = document.querySelectorAll('input[name="categoria"]:checked');
+            categoriasSeleccionadas = Array.from(checkboxes).map(cb => cb.value);
+
+            if (categoriasSeleccionadas.length === 0) {
+                alert("¡Selecciona al menos una opción, bonita! 💕");
+                return;
+            }
+
+            const contenedorRestaurantes = document.getElementById('restaurant-list');
+            contenedorRestaurantes.innerHTML = '';
+
+            const restaurantesFiltrados = restaurantesData.filter(r => categoriasSeleccionadas.includes(r.categoria));
+
+            if (restaurantesFiltrados.length > 0) {
+                restaurantesFiltrados.forEach((res, index) => {
+                    const label = document.createElement('label');
+                    label.classList.add('restaurant-card');
+                    label.innerHTML = `
+                        <input type="checkbox" name="restaurante-elegido" value="${res.nombre}">
+                        <div class="restaurant-info">
+                            <h4>${res.nombre}</h4>
+                            <p>${res.descripcion}</p>
+                        </div>
+                    `;
+
+                    const chk = label.querySelector('input');
+                    chk.addEventListener('change', () => {
+                        if (chk.checked) {
+                            label.classList.add('selected');
+                        } else {
+                            label.classList.remove('selected');
+                        }
+                    });
+
+                    contenedorRestaurantes.appendChild(label);
+                });
+            } else {
+                contenedorRestaurantes.innerHTML = `<p style="text-align:center;">¡Sorpresa! Iremos a donde tú quieras mi amor.</p>`;
+            }
+
+            // Ya no llamamos a lanzarRosasAnimacion() aquí, 
+            // porque transicionarTarjetas lo hará automáticamente.
+            transicionarTarjetas('card-2', 'card-3');
+        }
+
+        function enviarSeleccionWhatsApp() {
+            const checksRestaurantes = document.querySelectorAll('input[name="restaurante-elegido"]:checked');
+            const restaurantesElegidos = Array.from(checksRestaurantes).map(cb => cb.value);
+            // ¡RECUERDA PONER TU NÚMERO AQUÍ ABAJO!
+            const tuNumeroWhatsApp = "573XXXXXXXXX"; 
+            let mensaje = "¡Hola mi amor! He aceptado tu invitación a la cita 💖. Y felices 20 meses 🥰.\n\nElegí estas opciones de restaurantes:\n";
+
+            if (restaurantesElegidos.length > 0) {
+                restaurantesElegidos.forEach((r, i) => {
+                    mensaje += `${i + 1}. ${r}\n`;
+                });
+            } else {
+                mensaje += "Dejé que tú decidieras el lugar exacto. ¡Te amo!";
+            }
+
+            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${tuNumeroWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        const frasesNo = [
+            "¿En serio?",
+            "Estás bromeando",
+            "¡Toca aquí arriba!",
+            "Ojito que me enojo...",
+            "Piénsalo bien 🤔",
+            "Me vas a hacer llorar 😭",
+            "Última oportunidad",
+            "Di que siiii"
+        ];
+
+        let contadorNo = 0;
+        let escalaNo = 1;
+        let escalaYes = 1;
+
+        function rechazarCita() {
+            const btnNo = document.getElementById('btn-no');
+            const btnYes = document.getElementById('btn-yes');
+
+            btnNo.innerText = frasesNo[contadorNo % frasesNo.length];
+            contadorNo++;
+
+            escalaNo -= 0.15;
+            if (escalaNo < 0.2) escalaNo = 0.2;
+            btnNo.style.transform = `scale(${escalaNo})`;
+
+            escalaYes += 0.2;
+            btnYes.style.transform = `scale(${escalaYes})`;
+        }
+
+        // =========================================
+        // ANIMACIÓN DE LAS ROSAS (PARÁBOLA HACIA LOS LADOS)
+        // =========================================
+        function lanzarRosasAnimacion() {
+            const cantidadRosas = 70; 
+
+            for (let i = 0; i < cantidadRosas; i++) {
+                const rose = document.createElement('img');
+                rose.src = './rose.png';
+                rose.classList.add('falling-rose');
+                document.body.appendChild(rose);
+
+                const direction = Math.random() > 0.5 ? 1 : -1;
+                const horizontalDistance = (window.innerWidth / 2) + 150 + (Math.random() * (window.innerWidth / 2));
+                const targetX = direction * horizontalDistance;
+                const targetY = (window.innerHeight / 2) + 100 + (Math.random() * 300);
+                const peakY = -150 - (Math.random() * 300);
+
+                const randomScale = (Math.random() * 1.5) + 0.3; 
+                const randomRotation = (Math.random() - 0.5) * 1080;
+
+                gsap.set(rose, {
+                    xPercent: -50,
+                    yPercent: -50,
+                    x: 0,
+                    y: 0,
+                    scale: 0.2, 
+                    opacity: 1,
+                    rotation: 0
+                });
+
+                const riseDuration = 0.3 + (Math.random() * 0.2); 
+                const fallDuration = 1.0 + (Math.random() * 0.6); 
+
+                gsap.to(rose, {
+                    keyframes: [
+                        {
+                            x: targetX * 0.2, 
+                            y: peakY,
+                            scale: randomScale,
+                            rotation: randomRotation * 0.5,
+                            duration: riseDuration,
+                            ease: "power1.out"
+                        },
+                        {
+                            x: targetX,
+                            y: targetY,
+                            scale: randomScale,
+                            opacity: 0,
+                            rotation: randomRotation,
+                            duration: fallDuration,
+                            ease: "power2.in",
+                            onComplete: () => rose.remove()
+                        }
+                    ]
+                });
+            }
+        }
+
+        function nextCard(currentId, nextId) {
+            transicionarTarjetas(`card-${currentId}`, `card-${nextId}`);
+        }
+
+        function transicionarTarjetas(currentIdStr, nextIdStr) {
+            // ¡Aquí es donde ocurre la magia! 
+            // Llamamos a la animación de las rosas cada vez que se ejecute una transición.
+            lanzarRosasAnimacion();
+
+            const currentCard = document.getElementById(currentIdStr);
+            const nextCardObj = document.getElementById(nextIdStr);
+
+            gsap.to(currentCard, {
+                x: -200,
+                opacity: 0,
+                rotation: -10,
+                duration: 0.5,
+                ease: "power2.in",
+                onComplete: () => {
+                    currentCard.classList.remove('active');
+                    gsap.set(currentCard, { x: 0, rotation: 0 });
+                }
+            });
+
+            nextCardObj.classList.add('active');
+            gsap.fromTo(nextCardObj,
+                { x: 200, opacity: 0, rotation: 10 },
+                { x: 0, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(1.7)", delay: 0.2 }
+            );
+        }
+    </script>
+</body>
+
+</html>
