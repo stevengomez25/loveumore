@@ -48,19 +48,16 @@
         }
 
         @keyframes scrollGrass {
-            from {
-                background-position-x: 0px;
-            }
-
-            to {
-                background-position-x: calc(var(--grass-width) * -1);
-            }
+            from { background-position-x: 0px; }
+            to { background-position-x: calc(var(--grass-width) * -1); }
         }
 
+        /* AJUSTE RESPONSIVO: El contenedor ahora es el tamaño exacto del recuadro gris */
         .game-container {
             position: relative;
-            width: 720px;
-            height: 900px;
+            width: 72vw; /* En celulares toma buen espacio */
+            max-width: 380px; /* En PC no se hace gigante */
+            aspect-ratio: 5 / 7.2; /* Mantiene la proporción vertical del rectángulo gris */
             z-index: 10;
         }
 
@@ -79,23 +76,31 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-            background-image: url('./flowers.png');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center;
-            image-rendering: pixelated;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 140px 220px;
+            padding: 15px; /* Un padding mínimo interno */
             box-sizing: border-box;
             opacity: 0;
             transform: translateY(50px);
+            pointer-events: none;
+        }
+
+        /* LA MAGIA: Las flores se colocan aquí y se desbordan hacia afuera del contenedor */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -25%;
+            bottom: -25%;
+            left: -30%;
+            right: -30%;
+            background-image: url('./flowers.png');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
             pointer-events: none;
         }
 
@@ -104,12 +109,17 @@
             transform: translateY(0);
             pointer-events: auto;
         }
+        
+        .card h2 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
 
         .card p {
-            font-size: 15px;
+            font-size: 13px;
             font-weight: bold;
-            line-height: 1.5;
-            margin-bottom: 30px;
+            line-height: 1.3;
+            margin: 0 0 15px 0;
         }
 
         .btn-container {
@@ -117,34 +127,26 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            gap: 15px;
+            gap: 10px;
         }
 
         .btn {
             color: white;
             border: 2px solid #ffb6c1;
-            border-radius: 25px;
-            padding: 12px 25px;
+            border-radius: 20px;
+            padding: 10px 20px;
             font-family: inherit;
-            font-size: 18px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            width: 80%;
+            width: 90%;
             transition: all 0.2s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-yes {
-            background-color: #ff4081;
-        }
-
-        .btn-no {
-            background-color: #ff80ab;
-        }
-
-        .btn:active {
-            transform: scale(0.95) !important;
-        }
+        .btn-yes { background-color: #ff4081; }
+        .btn-no { background-color: #ff80ab; }
+        .btn:active { transform: scale(0.95) !important; }
 
         .falling-rose {
             position: absolute;
@@ -159,27 +161,30 @@
             transform: translate(-50%, -50%);
         }
 
+        /* Contenedores ajustados para caber perfecto en el recuadro gris */
         .options-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 6px;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             text-align: left;
             box-sizing: border-box;
+            max-height: 55%;
+            overflow-y: auto;
         }
 
         .option-pill {
-            background-color: rgba(255, 255, 255, 0.7);
-            border: 2px solid #ffb6c1;
-            padding: 8px 10px;
-            border-radius: 12px;
-            font-size: 11px;
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1.5px solid #ffb6c1;
+            padding: 6px 8px;
+            border-radius: 10px;
+            font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             color: #d81b60;
             box-sizing: border-box;
             white-space: normal;
@@ -188,67 +193,75 @@
 
         .option-pill input {
             accent-color: #ff4081;
-            transform: scale(1.1);
+            transform: scale(1);
             flex-shrink: 0;
+            margin: 0;
         }
 
         .restaurant-scroll-box {
             width: 100%;
-            max-height: 340px;
+            height: 250px;
+            max-height: 55%;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             padding-right: 5px;
             box-sizing: border-box;
+            margin-bottom: 10px;
         }
 
         .restaurant-card {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #ffb6c1;
-            border-radius: 12px;
-            padding: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1.5px solid #ffb6c1;
+            border-radius: 10px;
+            padding: 10px;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 8px;
         }
 
         .restaurant-card input[type="checkbox"] {
             accent-color: #ff4081;
-            transform: scale(1.3);
-            margin-top: 3px;
+            transform: scale(1.1);
+            margin-top: 2px;
         }
 
         .restaurant-card.selected {
             border-color: #ff4081;
             background-color: #ffe4e1;
-            transform: scale(1.02);
+            transform: scale(1.01);
         }
 
         .restaurant-info h4 {
-            margin: 0 0 3px 0;
+            margin: 0 0 2px 0;
             color: #d81b60;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .restaurant-info p {
             margin: 0;
-            font-size: 11px;
+            font-size: 10px;
             color: #555;
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         @keyframes walkAcross {
-            0% {
-                left: 100vw;
-            }
+            0% { left: 100vw; }
+            100% { left: -100px; }
+        }
 
-            100% {
-                left: -100px;
+        @media (max-width: 450px) {
+            .game-container {
+                width: 82vw; /* En pantallas muy pequeñas, tomamos más ancho */
             }
+            .card h2 { font-size: 18px; }
+            .card p { font-size: 12px; }
+            .btn { font-size: 14px; padding: 8px 15px; }
+            .option-pill { font-size: 9px; padding: 5px; }
         }
     </style>
 </head>
@@ -272,55 +285,42 @@
 
         <div class="card" id="card-2">
             <h2>Elige los detalles 🍴</h2>
-            <p>¿Qué tipo de comida te gustaría para nuestra cita?</p>
+            <p style="margin-bottom: 8px;">¿Qué tipo de comida te gustaría para nuestra cita?</p>
 
             <div class="options-container">
-                <label class="option-pill"><input type="checkbox" name="categoria" value="fast-food"> Fast Food &
-                    Burguers 🍔</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="italiana"> Italiana & Pizzas
-                    🍕</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="asiatica"> Asiática (Sushi /
-                    Ramen) 🍣</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="coreana"> Coreana (BBQ /
-                    Pollo) 🍗</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="mexicana"> Mexicana & Tacos
-                    🌮</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="peruana"> Peruana & Mariscos
-                    🦐</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="hamburguesas"> Parrilla &
-                    Carnes 🥩</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="saludable"> Saludable & Bowls
-                    🥗</label>
-                <label class="option-pill"><input type="checkbox" name="categoria" value="casa"> Casera & Tradicional
-                    🍲</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="fast-food"> Fast Food & Burguers 🍔</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="italiana"> Italiana & Pizzas 🍕</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="asiatica"> Asiática (Sushi / Ramen) 🍣</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="coreana"> Coreana (BBQ / Pollo) 🍗</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="mexicana"> Mexicana & Tacos 🌮</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="peruana"> Peruana & Mariscos 🦐</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="hamburguesas"> Parrilla & Carnes 🥩</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="saludable"> Saludable & Bowls 🥗</label>
+                <label class="option-pill"><input type="checkbox" name="categoria" value="casa"> Casera & Tradicional 🍲</label>
             </div>
 
             <button class="btn btn-yes" onclick="guardarPreferenciasYContinuar()">Siguiente ✨</button>
         </div>
 
         <div class="card" id="card-3">
-            <h2>Restaurantes para ti 🥰</h2>
+            <h2>Restaurantes 🥰</h2>
             <p style="font-size: 11px; margin-bottom: 5px;">Elige los que te gusten:</p>
 
-            <div id="restaurant-list" class="restaurant-scroll-box">
-            </div>
+            <div id="restaurant-list" class="restaurant-scroll-box"></div>
 
-            <button class="btn btn-yes" style="margin-top: 15px;" onclick="nextCard(3, 4)">Continuar ✨</button>
+            <button class="btn btn-yes" onclick="nextCard(3, 4)">Continuar ✨</button>
         </div>
 
         <div class="card" id="card-4">
             <h2>¡Felices 20 meses! ❤️</h2>
             <p>Te amo mucho. Gracias por estos 20 meses juntos y por tantas lindas memorias a tu lado. ¡Mi niña preciosa!</p>
 
-            <button class="btn btn-yes" style="margin-top: 15px;" onclick="enviarSeleccionWhatsApp()">¡Confirmar Cita por WhatsApp! 💌</button>
+            <button class="btn btn-yes" onclick="enviarSeleccionWhatsApp()">¡Confirmar Cita! 💌</button>
         </div>
 
     </div>
 
     <script>
-        // =========================================
-        // BASE DE DATOS DE RESTAURANTES POR CATEGORÍA
-        // =========================================
         const restaurantesData = [
             { categoria: 'fast-food', nombre: 'El Garaje', descripcion: 'Clásico indiscutible con temática motera. Hamburguesas gigantes cerca al Parque San Pío.' },
             { categoria: 'fast-food', nombre: 'El Menor', descripcion: 'Hamburguesas de autor con mezclas increíbles y un sabor urbano que la rompe en la ciudad.' },
@@ -364,7 +364,7 @@
             const restaurantesFiltrados = restaurantesData.filter(r => categoriasSeleccionadas.includes(r.categoria));
 
             if (restaurantesFiltrados.length > 0) {
-                restaurantesFiltrados.forEach((res, index) => {
+                restaurantesFiltrados.forEach((res) => {
                     const label = document.createElement('label');
                     label.classList.add('restaurant-card');
                     label.innerHTML = `
@@ -387,18 +387,15 @@
                     contenedorRestaurantes.appendChild(label);
                 });
             } else {
-                contenedorRestaurantes.innerHTML = `<p style="text-align:center;">¡Sorpresa! Iremos a donde tú quieras mi amor.</p>`;
+                contenedorRestaurantes.innerHTML = `<p style="text-align:center; font-size:12px;">¡Sorpresa! Iremos a donde tú quieras mi amor.</p>`;
             }
 
-            // Ya no llamamos a lanzarRosasAnimacion() aquí, 
-            // porque transicionarTarjetas lo hará automáticamente.
             transicionarTarjetas('card-2', 'card-3');
         }
 
         function enviarSeleccionWhatsApp() {
             const checksRestaurantes = document.querySelectorAll('input[name="restaurante-elegido"]:checked');
             const restaurantesElegidos = Array.from(checksRestaurantes).map(cb => cb.value);
-            // ¡RECUERDA PONER TU NÚMERO AQUÍ ABAJO!
             const tuNumeroWhatsApp = "573XXXXXXXXX"; 
             let mensaje = "¡Hola mi amor! He aceptado tu invitación a la cita 💖. Y felices 20 meses 🥰.\n\nElegí estas opciones de restaurantes:\n";
 
@@ -440,15 +437,12 @@
             if (escalaNo < 0.2) escalaNo = 0.2;
             btnNo.style.transform = `scale(${escalaNo})`;
 
-            escalaYes += 0.2;
+            escalaYes += 0.15;
             btnYes.style.transform = `scale(${escalaYes})`;
         }
 
-        // =========================================
-        // ANIMACIÓN DE LAS ROSAS (PARÁBOLA HACIA LOS LADOS)
-        // =========================================
         function lanzarRosasAnimacion() {
-            const cantidadRosas = 70; 
+            const cantidadRosas = 50; 
 
             for (let i = 0; i < cantidadRosas; i++) {
                 const rose = document.createElement('img');
@@ -480,24 +474,8 @@
 
                 gsap.to(rose, {
                     keyframes: [
-                        {
-                            x: targetX * 0.2, 
-                            y: peakY,
-                            scale: randomScale,
-                            rotation: randomRotation * 0.5,
-                            duration: riseDuration,
-                            ease: "power1.out"
-                        },
-                        {
-                            x: targetX,
-                            y: targetY,
-                            scale: randomScale,
-                            opacity: 0,
-                            rotation: randomRotation,
-                            duration: fallDuration,
-                            ease: "power2.in",
-                            onComplete: () => rose.remove()
-                        }
+                        { x: targetX * 0.2, y: peakY, scale: randomScale, rotation: randomRotation * 0.5, duration: riseDuration, ease: "power1.out" },
+                        { x: targetX, y: targetY, scale: randomScale, opacity: 0, rotation: randomRotation, duration: fallDuration, ease: "power2.in", onComplete: () => rose.remove() }
                     ]
                 });
             }
@@ -508,8 +486,6 @@
         }
 
         function transicionarTarjetas(currentIdStr, nextIdStr) {
-            // ¡Aquí es donde ocurre la magia! 
-            // Llamamos a la animación de las rosas cada vez que se ejecute una transición.
             lanzarRosasAnimacion();
 
             const currentCard = document.getElementById(currentIdStr);
